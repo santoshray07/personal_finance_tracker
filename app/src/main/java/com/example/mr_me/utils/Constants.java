@@ -29,4 +29,17 @@ public class Constants {
         return null;
     }
 
+    public static int getAccountsColor(String accountName) {
+        switch (accountName) {
+            case "Bank":
+                return R.color.bank_color;
+            case "Cash":
+                return R.color.cash_color;
+            case "Card":
+                return R.color.card_color;
+            default:
+                return R.color.default_color;
+        }
+    }
+
 }

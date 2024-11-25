@@ -2,16 +2,19 @@ package com.example.mr_me.models;
 
 import java.util.Date;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 //import io.realm.RealmObject;
 //import io.realm.annotations.PrimaryKey;
 
 //public class Transaction extends RealmObject {
-public class  Transaction{
+public class  Transaction extends RealmObject {
     private String type, category, account, note;
     private Date date;
     private double amount;
 
-//    @PrimaryKey
+    @PrimaryKey
     private long id;
 
     public Transaction() {

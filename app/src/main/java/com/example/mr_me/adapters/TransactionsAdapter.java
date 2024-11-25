@@ -58,6 +58,9 @@ public class TransactionsAdapter  extends  RecyclerView.Adapter<TransactionsAdap
             holder.binding.categoryIcon.setBackgroundTintList(context.getColorStateList(transactionCategory.getCategoryColor()));
         }
 
+        holder.binding.accountLabel.setBackgroundTintList(context.getColorStateList(Constants.getAccountsColor(transaction.getAccount())));
+
+
         if(transaction.getType().equals(Constants.INCOME)){
             holder.binding.amount.setTextColor(context.getColor(R.color.greenColor));
         } else if(transaction.getType().equals(Constants.EXPENSE)) {
