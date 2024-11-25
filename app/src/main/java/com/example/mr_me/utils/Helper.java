@@ -11,5 +11,9 @@ public class Helper {
         return dateFormat.format(date);
     }
 
+    public static String formatDateByMonth(Date date){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM, yyyy");
+        return dateFormat.format(date);
+    }
 
 }

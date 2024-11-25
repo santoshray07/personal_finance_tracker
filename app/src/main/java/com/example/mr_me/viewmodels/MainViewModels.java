@@ -46,37 +46,81 @@ public class MainViewModels extends AndroidViewModel {
 
     public void getTransactions(Calendar calendar){
         this.calendar = calendar;
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE,0);
-        calendar.set(Calendar.SECOND,0);
-        calendar.set(Calendar.MILLISECOND,0);
+        double income = 0;
+        double expense = 0;
+        double amount = 0;
+        RealmResults<Transaction> newTransactions = null;
 
-        RealmResults<Transaction> newTransactions = realm.where(Transaction.class)
-                .greaterThanOrEqualTo("date", calendar.getTime())
-                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
-                .findAll();
-        double income = realm.where(Transaction.class)
-                .greaterThanOrEqualTo("date", calendar.getTime())
-                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
-                .equalTo("type", Constants.INCOME)
-                .sum("amount").doubleValue();
+        if(Constants.SELECTED_TAB==Constants.DAILY) {
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
-        double expense = realm.where(Transaction.class)
-                .greaterThanOrEqualTo("date", calendar.getTime())
-                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
-                .equalTo("type", Constants.EXPENSE)
-                .sum("amount").doubleValue();
+             newTransactions = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", calendar.getTime())
+                    .lessThan("date", new Date(calendar.getTime().getTime() + (24 * 60 * 60 * 1000)))
+                    .findAll();
+            income = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", calendar.getTime())
+                    .lessThan("date", new Date(calendar.getTime().getTime() + (24 * 60 * 60 * 1000)))
+                    .equalTo("type", Constants.INCOME)
+                    .sum("amount").doubleValue();
 
-        double amount = realm.where(Transaction.class)
-                .greaterThanOrEqualTo("date", calendar.getTime())
-                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
-                .sum("amount").doubleValue();
+            expense = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", calendar.getTime())
+                    .lessThan("date", new Date(calendar.getTime().getTime() + (24 * 60 * 60 * 1000)))
+                    .equalTo("type", Constants.EXPENSE)
+                    .sum("amount").doubleValue();
 
-        totalIncome.setValue(income);
-        totalExpense.setValue(expense);
-        totalAmount.setValue(amount);
+            amount = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", calendar.getTime())
+                    .lessThan("date", new Date(calendar.getTime().getTime() + (24 * 60 * 60 * 1000)))
+                    .sum("amount").doubleValue();
 
-        transactions.setValue(newTransactions);
+            totalIncome.setValue(income);
+            totalExpense.setValue(expense);
+            totalAmount.setValue(amount);
+
+            transactions.setValue(newTransactions);
+        } else if(Constants.SELECTED_TAB == Constants.MONTHLY){
+            calendar.set(Calendar.DAY_OF_MONTH,0);
+            Date startTime = calendar.getTime();
+
+            calendar.add(Calendar.MONTH, 1);
+            Date endTime = calendar.getTime();
+
+            newTransactions = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", startTime)
+                    .lessThan("date", endTime)
+                    .findAll();
+
+            income = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", startTime)
+                    .lessThan("date", endTime)
+                    .equalTo("type", Constants.INCOME)
+                    .sum("amount")
+                    .doubleValue();
+
+            expense = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", startTime)
+                    .lessThan("date", endTime)
+                    .equalTo("type", Constants.EXPENSE)
+                    .sum("amount")
+                    .doubleValue();
+
+            amount = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", calendar.getTime())
+                    .lessThan("date",endTime)
+                    .sum("amount")
+                    .doubleValue();
+
+            totalIncome.setValue(income);
+            totalExpense.setValue(expense);
+            totalAmount.setValue(amount);
+
+            transactions.setValue(newTransactions);
+        }
     }
 
     public void deleteTransactions(Transaction transaction){

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu; // Import added for Menu
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -22,6 +23,7 @@ import com.example.mr_me.utils.Constants;
 import com.example.mr_me.utils.Helper;
 import com.example.mr_me.viewmodels.MainViewModels;
 import com.example.mr_me.views.fragments.AddTransactionFragment;
+import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
+    int selectedTab = 0;
 
     Calendar calendar;
     public MainViewModels viewModel;
@@ -65,17 +68,47 @@ public class MainActivity extends AppCompatActivity {
         updateDate();
 
         binding.nextDateBtn.setOnClickListener(c->{
-            calendar.add(Calendar.DATE, 1);
+            if(Constants.SELECTED_TAB==Constants.DAILY){
+                calendar.add(Calendar.DATE, 1);
+            } else if(Constants.SELECTED_TAB==Constants.MONTHLY) {
+                calendar.add(Calendar.MONTH, 1);
+            }
             updateDate();
-            viewModel.getTransactions(calendar);
         });
 
         binding.prevDateBtn.setOnClickListener(c->{
-            calendar.add(Calendar.DATE, -1);
+            if(Constants.SELECTED_TAB==Constants.DAILY){
+                calendar.add(Calendar.DATE, -1);
+            } else if(Constants.SELECTED_TAB==Constants.MONTHLY){
+                calendar.add(Calendar.MONTH, -1);
+            }
             updateDate();
-            viewModel.getTransactions(calendar);
         });
 
+
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Toast.makeText(MainActivity.this, tab.getText(), Toast.LENGTH_SHORT).show();
+                if(Objects.equals(tab.getText(), "Monthly")){
+                    Constants.SELECTED_TAB = 1;
+                    updateDate();
+                } else if(Objects.equals(tab.getText(), "Daily")){
+                    Constants.SELECTED_TAB = 0;
+                    updateDate();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         // Apply window insets
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
@@ -128,7 +161,12 @@ viewModel.getTransactions(calendar);
     }
 
     void updateDate (){
-        binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
+        if(Constants.SELECTED_TAB==Constants.DAILY){
+            binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
+        } else if(Constants.SELECTED_TAB==Constants.MONTHLY){
+            binding.currentDate.setText(Helper.formatDateByMonth(calendar.getTime()));
+        }
+        viewModel.getTransactions(calendar);
     }
 
     @Override

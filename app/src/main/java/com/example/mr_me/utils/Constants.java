@@ -9,6 +9,14 @@ public class Constants {
     public static String INCOME = "INCOME";
     public static  String EXPENSE = "EXPENSE";
 
+    public static int DAILY = 0;
+    public static int MONTHLY = 1;
+    public static int CALENDER = 2;
+    public static int SUMMARY = 3;
+    public static int NOTES = 4;
+
+    public static int SELECTED_TAB = 0;
+
     public static ArrayList<Category> categories;
     public static void setCategories (){
         categories = new ArrayList<>();
