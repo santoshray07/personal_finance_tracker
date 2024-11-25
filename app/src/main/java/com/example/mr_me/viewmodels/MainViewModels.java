@@ -77,17 +77,13 @@ public class MainViewModels extends AndroidViewModel {
         transactions.setValue(newTransactions);
     }
 
-    public void addTransactions(){
+    public void addTransactions(Transaction transaction){
         realm.beginTransaction();
         try {
-            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Investment", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Business", "Bank", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Gpay", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Loan", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Rent", "Other", "Just testing", new Date(), 12000, new Date().getTime()));
+            realm.copyToRealmOrUpdate(transaction);
             realm.commitTransaction();
         } catch (Exception e) {
-            realm.cancelTransaction(); // Roll back changes if something goes wrong
+            realm.cancelTransaction();
             e.printStackTrace();
         }
     }

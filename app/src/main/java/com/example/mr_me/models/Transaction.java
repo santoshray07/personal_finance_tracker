@@ -137,4 +137,5 @@ public class Transaction extends RealmObject {
     public void setId(long id) { this.id = id; }
     public long getTimestamp() { return timestamp; }
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
 }

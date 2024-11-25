@@ -21,8 +21,10 @@ import com.example.mr_me.databinding.FragmentAddTransactionBinding;
 import com.example.mr_me.databinding.ListDialogBinding;
 import com.example.mr_me.models.Account;
 import com.example.mr_me.models.Category;
+import com.example.mr_me.models.Transaction;
 import com.example.mr_me.utils.Constants;
 import com.example.mr_me.utils.Helper;
+import com.example.mr_me.views.activities.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +41,7 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
     }
 
     FragmentAddTransactionBinding binding;
+    Transaction transaction;
 
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -47,11 +50,15 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAddTransactionBinding.inflate(inflater);
+        transaction = new Transaction();
+
         binding.incomeBtn.setOnClickListener(c->{
             binding.incomeBtn.setBackground(requireContext().getDrawable(R.drawable.income_selector));
             binding.expenseBtn.setBackground(requireContext().getDrawable(R.drawable.default_selector));
             binding.expenseBtn.setTextColor(requireContext().getColor(R.color.textColor));
             binding.incomeBtn.setTextColor(requireContext().getColor(R.color.greenColor));
+
+            transaction.setType(Constants.INCOME);
         });
 
         binding.expenseBtn.setOnClickListener(c->{
@@ -59,6 +66,8 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
             binding.expenseBtn.setBackground(requireContext().getDrawable(R.drawable.expense_selector));
             binding.expenseBtn.setTextColor(requireContext().getColor(R.color.redColor));
             binding.incomeBtn.setTextColor(requireContext().getColor(R.color.textColor));
+
+            transaction.setType(Constants.EXPENSE);
         });
 
 //        binding.selectDate.setOnClickListener(c->{
@@ -101,9 +110,12 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
                 String selectedDate = Helper.formatDate(calendar.getTime());
 
                 // Set the formatted date as the text of the EditText inside the TextInputLayout
+                transaction.setDate(calendar.getTime());
+                transaction.setId(calendar.getTime().getTime());
                 if (binding.selectDate.getEditableText() != null) {
                     binding.selectDate.setText(selectedDate);
                 }
+
             }, year, month, day);
 
             datePickerDialog.show();
@@ -117,6 +129,7 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
             CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), Constants.categories, new CategoryAdapter.CategoryClickListener() {
                 @Override
                 public void onCategoryClicked(Category category) {
+                    transaction.setCategory(category.getCategoryName());
                     binding.selectCategory.setText(category.getCategoryName());
                     categoryDialog.dismiss();
                 }
@@ -131,7 +144,6 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
             ListDialogBinding dialogBinding = ListDialogBinding.inflate(inflater);
             AlertDialog accountDialog = new AlertDialog.Builder(getContext()).create();
             accountDialog.setView(dialogBinding.getRoot());
-
             ArrayList<Account> accounts = new ArrayList<>();
             accounts.add(new Account(0,"Cash"));
             accounts.add(new Account(0,"Bank"));
@@ -142,6 +154,7 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
             AccountsAdapter adapter = new AccountsAdapter(getContext(), accounts, new AccountsAdapter.AccountsClickListener() {
                 @Override
                 public void onAccountSelected(Account account) {
+                    transaction.setType(account.getAccountName());
                     binding.selectAccountType.setText(account.getAccountName());
                     accountDialog.dismiss();
                 }
@@ -153,7 +166,21 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
 
         });
 
+        binding.addTransBtn.setOnClickListener(c->{
+            double amount = Double.parseDouble(Objects.requireNonNull(binding.enterAmount.getText()).toString());
+            String note = Objects.requireNonNull(binding.addNote.getText()).toString();
 
+            if(transaction.getType().equals(Constants.EXPENSE)){
+                transaction.setAmount(amount*-1);
+            }else{
+                transaction.setAmount(amount);
+            }
+
+            transaction.setDescription(note);
+
+           ( (MainActivity) requireActivity()).viewModel.addTransactions(transaction);
+           dismiss();
+        });
         return binding.getRoot();
     }
 }

@@ -3,6 +3,7 @@ package com.example.mr_me.views.activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu; // Import added for Menu
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
 
     Calendar calendar;
-    MainViewModels viewModel;
+    public MainViewModels viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,12 @@ viewModel.transactions.observe(this, new Observer<RealmResults<Transaction>>() {
     public void onChanged(RealmResults<Transaction> transactions) {
         TransactionsAdapter transactionsAdapter = new TransactionsAdapter(MainActivity.this, transactions);
         binding.transactionsList.setAdapter(transactionsAdapter);
+        if(!transactions.isEmpty()){
+            binding.emptyState.setVisibility(View.GONE);
+        }else{
+            binding.emptyState.setVisibility(View.VISIBLE);
+        }
+
     }
 });
 viewModel.totalIncome.observe(this, new Observer<Double>() {
@@ -115,12 +122,14 @@ viewModel.getTransactions(calendar);
 
     }
 
+
+    public void getTransactions(){
+
+    }
+
     void updateDate (){
         binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
