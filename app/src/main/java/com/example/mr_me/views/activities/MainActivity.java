@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.mr_me.R;
@@ -17,6 +19,7 @@ import com.example.mr_me.databinding.ActivityMainBinding;
 import com.example.mr_me.models.Transaction;
 import com.example.mr_me.utils.Constants;
 import com.example.mr_me.utils.Helper;
+import com.example.mr_me.viewmodels.MainViewModels;
 import com.example.mr_me.views.fragments.AddTransactionFragment;
 
 import java.text.SimpleDateFormat;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
 
     Calendar calendar;
-    Realm realm;
+    MainViewModels viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +46,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        viewModel = new ViewModelProvider(this).get(MainViewModels.class);
+
         binding.addTransactionBtn.setOnClickListener(c->{
             new AddTransactionFragment().show(getSupportFragmentManager(), null);
         });
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
 
-        setUpDatabase();
 
         setSupportActionBar(binding.toolBar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Transactions");
@@ -62,11 +66,13 @@ public class MainActivity extends AppCompatActivity {
         binding.nextDateBtn.setOnClickListener(c->{
             calendar.add(Calendar.DATE, 1);
             updateDate();
+            viewModel.getTransactions(calendar);
         });
 
         binding.prevDateBtn.setOnClickListener(c->{
             calendar.add(Calendar.DATE, -1);
             updateDate();
+            viewModel.getTransactions(calendar);
         });
 
 
@@ -77,44 +83,24 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
-        realm.beginTransaction();
-        try {
-            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Investment", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Business", "Bank", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Gpay", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Loan", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Rent", "Other", "Just testing", new Date(), 12000, new Date().getTime()));
-            realm.commitTransaction();
-        } catch (Exception e) {
-            realm.cancelTransaction(); // Roll back changes if something goes wrong
-            e.printStackTrace();
-        }
-
-        RealmResults<Transaction> transactions = realm.where(Transaction.class).findAll();
-
-
-        TransactionsAdapter transactionsAdapter = new TransactionsAdapter(this, transactions);
-        binding.transactionsList.setLayoutManager(new LinearLayoutManager(this));
+binding.transactionsList.setLayoutManager(new LinearLayoutManager(this));
+viewModel.transactions.observe(this, new Observer<RealmResults<Transaction>>() {
+    @Override
+    public void onChanged(RealmResults<Transaction> transactions) {
+        TransactionsAdapter transactionsAdapter = new TransactionsAdapter(MainActivity.this, transactions);
         binding.transactionsList.setAdapter(transactionsAdapter);
+    }
+});
+viewModel.getTransactions(calendar);
+
     }
 
     void updateDate (){
         binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
     }
-    
 
-void setUpDatabase() {
-    Realm.init(this);
 
-    RealmConfiguration config = new RealmConfiguration.Builder()
-            .schemaVersion(1) // Increment when schema changes
-            .migration(new MyRealmMigration()) // Handle migration
-            .build();
 
-    Realm.setDefaultConfiguration(config);
-    realm = Realm.getDefaultInstance();
-}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
