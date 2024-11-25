@@ -19,6 +19,7 @@ import io.realm.RealmResults;
 
 public class MainViewModels extends AndroidViewModel {
     public MutableLiveData<RealmResults<Transaction>> transactions = new MutableLiveData<>();
+    Calendar calendar;
 
     public MutableLiveData<Double> totalIncome = new MutableLiveData<>();
     public MutableLiveData<Double> totalExpense = new MutableLiveData<>();
@@ -44,6 +45,7 @@ public class MainViewModels extends AndroidViewModel {
     }
 
     public void getTransactions(Calendar calendar){
+        this.calendar = calendar;
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
@@ -75,6 +77,13 @@ public class MainViewModels extends AndroidViewModel {
         totalAmount.setValue(amount);
 
         transactions.setValue(newTransactions);
+    }
+
+    public void deleteTransactions(Transaction transaction){
+        realm.beginTransaction();
+        transaction.deleteFromRealm();
+        realm.commitTransaction();
+        getTransactions(calendar);
     }
 
     public void addTransactions(Transaction transaction){

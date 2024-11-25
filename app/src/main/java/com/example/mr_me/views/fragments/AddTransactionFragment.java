@@ -66,21 +66,8 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
             binding.expenseBtn.setBackground(requireContext().getDrawable(R.drawable.expense_selector));
             binding.expenseBtn.setTextColor(requireContext().getColor(R.color.redColor));
             binding.incomeBtn.setTextColor(requireContext().getColor(R.color.textColor));
-
             transaction.setType(Constants.EXPENSE);
         });
-
-//        binding.selectDate.setOnClickListener(c->{
-//            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext());
-//            datePickerDialog.setOnDateSetListener((DatePicker, i,i1,i2)->{
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
-//                calendar.set(Calendar.MONTH, datePicker.getMonth());
-//                calendar.set(Calendar.YEAR, datePicker.getYear());
-//            });
-//            datePickerDialog.show();
-//        });
-
 
         Calendar calendar1 = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -176,11 +163,14 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
                 transaction.setAmount(amount);
             }
 
+
             transaction.setDescription(note);
 
            ( (MainActivity) requireActivity()).viewModel.addTransactions(transaction);
            dismiss();
         });
+
+
         return binding.getRoot();
     }
 }
