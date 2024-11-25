@@ -19,6 +19,11 @@ import io.realm.RealmResults;
 
 public class MainViewModels extends AndroidViewModel {
     public MutableLiveData<RealmResults<Transaction>> transactions = new MutableLiveData<>();
+
+    public MutableLiveData<Double> totalIncome = new MutableLiveData<>();
+    public MutableLiveData<Double> totalExpense = new MutableLiveData<>();
+    public MutableLiveData<Double> totalAmount= new MutableLiveData<>();
+
     Realm realm;
     public MainViewModels(@NonNull Application application){
         super(application);
@@ -48,6 +53,27 @@ public class MainViewModels extends AndroidViewModel {
                 .greaterThanOrEqualTo("date", calendar.getTime())
                 .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
                 .findAll();
+        double income = realm.where(Transaction.class)
+                .greaterThanOrEqualTo("date", calendar.getTime())
+                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
+                .equalTo("type", Constants.INCOME)
+                .sum("amount").doubleValue();
+
+        double expense = realm.where(Transaction.class)
+                .greaterThanOrEqualTo("date", calendar.getTime())
+                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
+                .equalTo("type", Constants.EXPENSE)
+                .sum("amount").doubleValue();
+
+        double amount = realm.where(Transaction.class)
+                .greaterThanOrEqualTo("date", calendar.getTime())
+                .lessThan("date", new Date(calendar.getTime().getTime()+(24*60*60*1000)))
+                .sum("amount").doubleValue();
+
+        totalIncome.setValue(income);
+        totalExpense.setValue(expense);
+        totalAmount.setValue(amount);
+
         transactions.setValue(newTransactions);
     }
 

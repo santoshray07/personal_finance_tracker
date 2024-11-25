@@ -91,6 +91,26 @@ viewModel.transactions.observe(this, new Observer<RealmResults<Transaction>>() {
         binding.transactionsList.setAdapter(transactionsAdapter);
     }
 });
+viewModel.totalIncome.observe(this, new Observer<Double>() {
+    @Override
+    public void onChanged(Double aDouble) {
+        binding.incomeLbl.setText(String.valueOf(aDouble));
+    }
+});
+
+viewModel.totalExpense.observe(this, new Observer<Double>() {
+    @Override
+    public void onChanged(Double aDouble) {
+        binding.expenseLbl.setText(String.valueOf(aDouble));
+    }
+});
+
+viewModel.totalAmount.observe(this, new Observer<Double>() {
+    @Override
+    public void onChanged(Double aDouble) {
+        binding.totalLbl.setText(String.valueOf(aDouble));
+    }
+});
 viewModel.getTransactions(calendar);
 
     }

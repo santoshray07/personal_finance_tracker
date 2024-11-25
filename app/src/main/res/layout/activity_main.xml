@@ -136,7 +136,7 @@
                 android:text="Income" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/incomeLbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -159,7 +159,7 @@
                 android:text="Expense" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/expenseLbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -182,7 +182,7 @@
                 android:text="Total" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/totalLbl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
