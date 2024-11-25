@@ -27,13 +27,14 @@ import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
 
     Calendar calendar;
-//    Realm realm;
+    Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
 
-//        setUpDatabase();
+        setUpDatabase();
 
         setSupportActionBar(binding.toolBar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Transactions");
@@ -76,24 +77,21 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        transactions.add(new Transaction(Constants.INCOME,"Investment", "Cash", "Just testing", new Date(), 12000, 56498498));
-        transactions.add(new Transaction(Constants.EXPENSE,"Business", "Bank", "Just testing", new Date(), 12000, 56498498));
-        transactions.add(new Transaction(Constants.INCOME,"Gpay", "Cash", "Just testing", new Date(), 12000, 56498498));
-        transactions.add(new Transaction(Constants.EXPENSE,"Loan", "Cash", "Just testing", new Date(), 12000, 56498498));
 
-//        realm.beginTransaction();
-//        try {
-//            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Investment", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-//            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Business", "Bank", "Just testing", new Date(), 12000, new Date().getTime()));
-//            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Gpay", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-//            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Loan", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
-//            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Rent", "Other", "Just testing", new Date(), 12000, new Date().getTime()));
-//            realm.commitTransaction();
-//        } catch (Exception e) {
-//            realm.cancelTransaction(); // Roll back changes if something goes wrong
-//            e.printStackTrace();
-//        }
+        realm.beginTransaction();
+        try {
+            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Investment", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
+            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Business", "Bank", "Just testing", new Date(), 12000, new Date().getTime()));
+            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Gpay", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
+            realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Loan", "Cash", "Just testing", new Date(), 12000, new Date().getTime()));
+            realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Rent", "Other", "Just testing", new Date(), 12000, new Date().getTime()));
+            realm.commitTransaction();
+        } catch (Exception e) {
+            realm.cancelTransaction(); // Roll back changes if something goes wrong
+            e.printStackTrace();
+        }
+
+        RealmResults<Transaction> transactions = realm.where(Transaction.class).findAll();
 
 
         TransactionsAdapter transactionsAdapter = new TransactionsAdapter(this, transactions);
@@ -104,22 +102,19 @@ public class MainActivity extends AppCompatActivity {
     void updateDate (){
         binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
     }
+    
 
-//    void setUpDatabase(){
-//        Realm.init(this);
-//        realm = Realm.getDefaultInstance();
-//    }
-//void setUpDatabase() {
-//    Realm.init(this);
-//
-//    RealmConfiguration config = new RealmConfiguration.Builder()
-//            .schemaVersion(1) // Increment when schema changes
-//            .migration(new MyRealmMigration()) // Handle migration
-//            .build();
-//
-//    Realm.setDefaultConfiguration(config);
-//    realm = Realm.getDefaultInstance();
-//}
+void setUpDatabase() {
+    Realm.init(this);
+
+    RealmConfiguration config = new RealmConfiguration.Builder()
+            .schemaVersion(1) // Increment when schema changes
+            .migration(new MyRealmMigration()) // Handle migration
+            .build();
+
+    Realm.setDefaultConfiguration(config);
+    realm = Realm.getDefaultInstance();
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

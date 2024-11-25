@@ -1,6 +1,7 @@
 package com.example.mr_me.views.activities;
 
 import java.util.Date;
+import java.util.Objects;
 
 import io.realm.DynamicRealm;
 import io.realm.RealmMigration;
@@ -11,11 +12,10 @@ public class MyRealmMigration implements RealmMigration {
     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
         RealmSchema schema = realm.getSchema();
 
-        // Migration logic for each version
         if (oldVersion == 0) {
-            // Version 1: Add the "Transaction" class
+            // Version 1: Create the Transaction class schema
             schema.create("Transaction")
-                    .addField("id", long.class) // Primary key
+                    .addField("id", long.class, io.realm.FieldAttribute.PRIMARY_KEY)
                     .addField("type", String.class)
                     .addField("category", String.class)
                     .addField("paymentMethod", String.class)
@@ -26,12 +26,11 @@ public class MyRealmMigration implements RealmMigration {
             oldVersion++;
         }
 
-        // Add more migrations as you increment schema versions
-        if (oldVersion == 1) {
-            // Example: Add a new field to an existing class
-            schema.get("Transaction")
-                    .addField("newField", String.class); // Add a new field
-            oldVersion++;
-        }
+//        if (oldVersion == 1) {
+//            // Example: Add new fields or modify schema for future versions
+//            Objects.requireNonNull(schema.get("Transaction"))
+//                    .addField("newField", String.class);
+//            oldVersion++;
+//        }
     }
 }

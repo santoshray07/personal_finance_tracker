@@ -1,8 +1,6 @@
 package com.example.mr_me.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,9 @@ import com.example.mr_me.models.Transaction;
 import com.example.mr_me.utils.Constants;
 import com.example.mr_me.utils.Helper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import io.realm.RealmResults;
 
 //import io.realm.RealmResults;
 
@@ -27,9 +26,9 @@ public class TransactionsAdapter  extends  RecyclerView.Adapter<TransactionsAdap
 
     Context context;
 //    RealmResults<Transaction> transactions;
-    ArrayList<Transaction> transactions;
+    RealmResults<Transaction> transactions;
 
-    public TransactionsAdapter(Context context, ArrayList<Transaction> transactions) {
+    public TransactionsAdapter(Context context, RealmResults<Transaction> transactions) {
         this.context = context;
         this.transactions = transactions;
     }
@@ -58,7 +57,7 @@ public class TransactionsAdapter  extends  RecyclerView.Adapter<TransactionsAdap
             holder.binding.categoryIcon.setBackgroundTintList(context.getColorStateList(transactionCategory.getCategoryColor()));
         }
 
-        holder.binding.accountLabel.setBackgroundTintList(context.getColorStateList(Constants.getAccountsColor(transaction.getAccount())));
+        holder.binding.accountLabel.setBackgroundTintList(context.getColorStateList(Constants.getAccountsColor(transaction.getType())));
 
 
         if(transaction.getType().equals(Constants.INCOME)){
