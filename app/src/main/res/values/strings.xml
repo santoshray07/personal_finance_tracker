@@ -18,4 +18,6 @@
     <string name="account_type">Account Type</string>
     <string name="note">Note</string>
     <string name="save_transactions">Save Transactions</string>
+    <string name="pluscion">plusCion</string>
+    <string name="plusicon">plusIcon</string>
 </resources>

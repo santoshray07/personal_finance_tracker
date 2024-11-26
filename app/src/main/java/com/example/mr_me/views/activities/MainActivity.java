@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import com.example.mr_me.utils.Constants;
 import com.example.mr_me.utils.Helper;
 import com.example.mr_me.viewmodels.MainViewModels;
 import com.example.mr_me.views.fragments.AddTransactionFragment;
+import com.example.mr_me.views.fragments.TransactionsFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
@@ -52,9 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(MainViewModels.class);
 
-        binding.addTransactionBtn.setOnClickListener(c->{
-            new AddTransactionFragment().show(getSupportFragmentManager(), null);
-        });
+
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
 
@@ -62,113 +62,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolBar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Transactions");
 
-        Constants.setCategories();
-
-        calendar = Calendar.getInstance();
-        updateDate();
-
-        binding.nextDateBtn.setOnClickListener(c->{
-            if(Constants.SELECTED_TAB==Constants.DAILY){
-                calendar.add(Calendar.DATE, 1);
-            } else if(Constants.SELECTED_TAB==Constants.MONTHLY) {
-                calendar.add(Calendar.MONTH, 1);
-            }
-            updateDate();
-        });
-
-        binding.prevDateBtn.setOnClickListener(c->{
-            if(Constants.SELECTED_TAB==Constants.DAILY){
-                calendar.add(Calendar.DATE, -1);
-            } else if(Constants.SELECTED_TAB==Constants.MONTHLY){
-                calendar.add(Calendar.MONTH, -1);
-            }
-            updateDate();
-        });
+        @SuppressLint("CommitTransaction") FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content, new TransactionsFragment());
+        transaction.commit();
 
 
-        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Toast.makeText(MainActivity.this, tab.getText(), Toast.LENGTH_SHORT).show();
-                if(Objects.equals(tab.getText(), "Monthly")){
-                    Constants.SELECTED_TAB = 1;
-                    updateDate();
-                } else if(Objects.equals(tab.getText(), "Daily")){
-                    Constants.SELECTED_TAB = 0;
-                    updateDate();
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        // Apply window insets
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Constants.setCategories();
 
-binding.transactionsList.setLayoutManager(new LinearLayoutManager(this));
-viewModel.transactions.observe(this, new Observer<RealmResults<Transaction>>() {
-    @Override
-    public void onChanged(RealmResults<Transaction> transactions) {
-        TransactionsAdapter transactionsAdapter = new TransactionsAdapter(MainActivity.this, transactions);
-        binding.transactionsList.setAdapter(transactionsAdapter);
-        if(!transactions.isEmpty()){
-            binding.emptyState.setVisibility(View.GONE);
-        }else{
-            binding.emptyState.setVisibility(View.VISIBLE);
-        }
 
     }
-});
-viewModel.totalIncome.observe(this, new Observer<Double>() {
-    @Override
-    public void onChanged(Double aDouble) {
-        binding.incomeLbl.setText(String.valueOf(aDouble));
-    }
-});
-
-viewModel.totalExpense.observe(this, new Observer<Double>() {
-    @Override
-    public void onChanged(Double aDouble) {
-        binding.expenseLbl.setText(String.valueOf(aDouble));
-    }
-});
-
-viewModel.totalAmount.observe(this, new Observer<Double>() {
-    @Override
-    public void onChanged(Double aDouble) {
-        binding.totalLbl.setText(String.valueOf(aDouble));
-    }
-});
-viewModel.getTransactions(calendar);
-
-    }
-
-
-    public void getTransactions(){
-
-    }
-
-    void updateDate (){
-        if(Constants.SELECTED_TAB==Constants.DAILY){
-            binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
-        } else if(Constants.SELECTED_TAB==Constants.MONTHLY){
-            binding.currentDate.setText(Helper.formatDateByMonth(calendar.getTime()));
-        }
-        viewModel.getTransactions(calendar);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_menu, menu);
