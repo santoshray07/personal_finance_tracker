@@ -3,9 +3,11 @@ package com.example.mr_me.views.activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu; // Import added for Menu
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -24,7 +26,9 @@ import com.example.mr_me.utils.Constants;
 import com.example.mr_me.utils.Helper;
 import com.example.mr_me.viewmodels.MainViewModels;
 import com.example.mr_me.views.fragments.AddTransactionFragment;
+import com.example.mr_me.views.fragments.StatsFragment;
 import com.example.mr_me.views.fragments.TransactionsFragment;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
@@ -65,6 +69,22 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("CommitTransaction") FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content, new TransactionsFragment());
         transaction.commit();
+
+        binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                @SuppressLint("CommitTransaction") FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                if(item.getItemId()==R.id.transitions){
+                    getSupportFragmentManager().popBackStack();
+                } else if(item.getItemId()==R.id.stats){
+                    transaction.replace(R.id.content, new StatsFragment());
+                    transaction.addToBackStack(null);
+
+                }
+                transaction.commit();
+                return true;
+            }
+        });
 
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
