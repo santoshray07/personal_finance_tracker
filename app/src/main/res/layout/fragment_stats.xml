@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".views.fragments.StatsFragment" >
 
+    <ImageView
+        android:id="@+id/emptyState2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:alpha="0.5"
+        android:src="@drawable/empty_state"
+        android:visibility="visible"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -68,6 +81,21 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/orange"
             android:text="Monthly" />
-
     </com.google.android.material.tabs.TabLayout>
+
+
+    <com.anychart.AnyChartView
+        android:id="@+id/anyChat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        app:layout_constraintVertical_bias="1.0">
+
+    </com.anychart.AnyChartView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

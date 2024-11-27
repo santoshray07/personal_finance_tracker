@@ -73,11 +73,9 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         String currentDate = dateFormat1.format(calendar1.getTime());
 
-// Set the default date in the TextInputLayout's EditText
         if (binding.selectDate.getEditableText() != null) {
             binding.selectDate.setText(currentDate);
         }
-
 
         binding.selectDate.setOnClickListener(c -> {
             // Get the current date

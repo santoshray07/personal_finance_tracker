@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(MainViewModels.class);
 
-
-
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
 
 
@@ -75,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 @SuppressLint("CommitTransaction") FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 if(item.getItemId()==R.id.transitions){
+                    transaction.replace(R.id.content, new TransactionsFragment());
                     getSupportFragmentManager().popBackStack();
                 } else if(item.getItemId()==R.id.stats){
                     transaction.replace(R.id.content, new StatsFragment());

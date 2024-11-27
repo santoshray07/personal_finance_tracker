@@ -54,6 +54,7 @@ public class TransactionsFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         updateDate();
+        viewModel.getTransactions(calendar);
 
         binding.nextDateBtn.setOnClickListener(c-> {
             if(Constants.SELECTED_TAB == Constants.DAILY) {
@@ -85,7 +86,7 @@ public class TransactionsFragment extends Fragment {
                 if(Objects.equals(tab.getText(), "Monthly")) {
                     Constants.SELECTED_TAB = 1;
                     updateDate();
-                } else if(tab.getText().equals("Daily")) {
+                } else if(Objects.equals(tab.getText(), "Daily")) {
                     Constants.SELECTED_TAB = 0;
                     updateDate();
                 }
