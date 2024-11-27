@@ -12,15 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MrMe"
         tools:targetApi="31">
+
+        <!-- Make Onboarding the launcher activity -->
         <activity
-            android:name=".views.activities.MainActivity"
-            android:exported="true"
-            >
+            android:name=".views.activities.Onboarding"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- MainActivity is no longer the launcher activity -->
+        <activity
+            android:name=".views.activities.MainActivity"
+            android:exported="true" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
