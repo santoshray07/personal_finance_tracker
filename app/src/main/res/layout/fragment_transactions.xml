@@ -17,7 +17,8 @@
         android:padding="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolBar">
+        app:layout_constraintTop_toBottomOf="@id/toolBar"
+        tools:ignore="NotSibling">
 
         <ImageView
             android:id="@+id/prevDateBtn"

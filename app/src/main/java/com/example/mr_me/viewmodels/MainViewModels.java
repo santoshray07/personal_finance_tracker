@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mr_me.models.Transaction;
@@ -179,5 +180,9 @@ public class MainViewModels extends AndroidViewModel {
             realm.cancelTransaction();
             e.printStackTrace();
         }
+    }
+
+    public LiveData<RealmResults<Transaction>> getCategoriesTransactions() {
+        return null;
     }
 }
